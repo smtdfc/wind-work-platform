@@ -1,0 +1,113 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String                 @id @default(dbgenerated("gen_random_uuid()"))
+  email       String                 @unique
+  username    String                 @unique
+  avatar      String?
+  displayName String?                @map("display_name")
+  role        Role                   @default(USER)
+  createdAt   DateTime               @default(now()) @map("created_at")
+  updatedAt   DateTime               @updatedAt @map("updated_at")
+  authMethods AuthenticationMethod[]
+  sessions    Session[]
+  permissions Permission[]
+  groups      UserGroup[]
+
+  @@map("users")
+}
+
+model AuthenticationMethod {
+  id         String              @id @default(dbgenerated("gen_random_uuid()"))
+  method     AuthMethodAvailable @default(PASSWORD)
+  value      String
+  createdAt  DateTime            @default(now()) @map("created_at")
+  updatedAt  DateTime            @updatedAt @map("updated_at")
+  userId     String              @map("user_id")
+  identifier String?
+  isPrimary  Boolean             @default(false) @map("is_primary")
+  lastUsedAt DateTime            @map("last_used_at")
+  user       User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions   Session[]
+
+  @@unique([userId, method, identifier])
+  @@map("authentication_methods")
+}
+
+enum Role {
+  ADMIN
+  USER
+  GUEST
+}
+
+enum AuthMethodAvailable {
+  PASSWORD
+}
+
+model Session {
+  id                     String               @id @default(dbgenerated("gen_random_uuid()"))
+  refreshToken           String               @map("refresh_token")
+  replacedAt             DateTime?            @map("replaced_at")
+  expiresAt              DateTime             @map("expires_at")
+  isBlocked              Boolean              @default(false) @map("is_blocked")
+  method                 AuthenticationMethod @relation(fields: [authenticationMethodId], references: [id])
+  createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @updatedAt @map("updated_at")
+  user                   User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                 String               @map("user_id")
+  authenticationMethodId String               @map("authentication_method_id")
+
+  @@map("sessions")
+}
+
+model Group {
+  id               String            @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  name             String
+  userGroups       UserGroup[]
+  groupPermissions GroupPermission[]
+
+  @@map("groups")
+}
+
+model UserGroup {
+  user    User   @relation(fields: [userId], references: [id])
+  group   Group  @relation(fields: [groupId], references: [id])
+  userId  String @map("user_id")
+  groupId String @map("group_id")
+
+  @@id([userId, groupId])
+  @@map("user_group")
+}
+
+model Permission {
+  id               String            @id @default(dbgenerated("gen_random_uuid()"))
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  name             String
+  description      String
+  user             User?             @relation(fields: [userId], references: [id])
+  userId           String?           @map("user_id")
+  groupPermissions GroupPermission[]
+
+  @@map("permissions")
+}
+
+model GroupPermission {
+  group        Group      @relation(fields: [groupId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  groupId      String     @map("group_id")
+  permissionId String     @map("permission_id")
+
+  @@id([groupId, permissionId])
+  @@map("group_permissions")
+}

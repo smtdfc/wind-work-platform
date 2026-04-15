@@ -1,0 +1,89 @@
+error UserNotFoundError{
+    message:"User not found"
+    code: "USER_NOT_FOUND_ERR"
+    status: 404
+}
+
+error SignInInformationIncorrectError{
+    message:"Sign-in Information Incorrect"
+    code: "SIGNIN_INFO_INCORRECT_ERR"
+    status: 400
+}
+
+error AuthorizationError{
+    message:"Unauthenticated"
+    code: "AUTHORIZATION_ERR"
+    status: 401
+}
+
+@CreateConstructor
+model ApiErrorResponseDTO{
+    code?: String
+    message: String
+    details?: Any
+}
+
+@CreateConstructor
+model ApiResponseDTO<T>{
+    status: String
+    timestamp: String
+    data: T
+    error?: ApiErrorResponseDTO
+}
+
+@CreateConstructor
+model Token{
+    accessToken:String
+}
+
+
+@CreateConstructor
+model User{
+    id: String   
+    email:String  
+    username:String  
+    avatar?:String
+    displayName?:String
+}
+
+@CreateConstructor
+model SignInMetadata{
+    browser: String
+    @NotNull("FIELD_NOT_NULL")
+    userAgent: String
+}
+
+@CreateConstructor
+model SignInWithEmailRequest{
+    @NotNull("FIELD_NOT_NULL")
+    @IsEmail("INVALID_EMAIL")
+    email:String
+
+    @NotNull("FIELD_NOT_NULL")
+    password: String
+
+    @NotNull("FIELD_NOT_NULL")
+    @NestedValidate("INVALID_DATA")
+    metadata: SignInMetadata
+}
+
+@CreateConstructor
+model SignInWithEmailResponse{
+    user: User
+    tokens: Token
+}
+
+@CreateConstructor
+model GetProfileResponse{
+    user: User
+}
+
+rest SignInWithEmail{
+    path:"/api/v1/auth/sign-in/email"
+    method:"POST"
+}
+
+rest GetProfile{
+    path:"/api/v1/auth/profile"
+    method:"GET"
+}

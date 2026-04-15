@@ -1,0 +1,4 @@
+packages:
+  - "wind-work-auth/**"
+  - "shared/**"
+  - "packages/**"
