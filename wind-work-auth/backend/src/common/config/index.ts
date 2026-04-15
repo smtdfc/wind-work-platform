@@ -8,6 +8,8 @@ export type Config = {
   databaseURL: string;
   jwtPublicKey: string;
   jwtPrivatekey: string;
+  isProduction: boolean;
+  appDomain: string;
 };
 
 @Global()
@@ -18,6 +20,8 @@ export type Config = {
       useFactory: () => {
         const config: Partial<Config> = {
           databaseURL: process.env.DATABASE_URL,
+          isProduction: process.env.NODE_ENV === 'production',
+          appDomain: process.env.APP_DOMAIN ?? '.your-domain',
         };
         const rootPath = process.cwd();
         const jwtPublicKeyFile = process.env.JWT_PUBLIC_KEY_FILE;

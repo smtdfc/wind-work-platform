@@ -46,9 +46,7 @@ export class AuthService {
     };
   }
 
-  async signInWithEmail(
-    request: SignInWithEmailRequest,
-  ): Promise<SignInWithEmailResponse> {
+  async signInWithEmail(request: SignInWithEmailRequest) {
     const user = await this.userRepo.findForSignIn(request.email);
     if (!user) {
       throwErrorFromContract(SignInInformationIncorrectError, {});
@@ -81,18 +79,23 @@ export class AuthService {
       passwordMethod?.id,
     );
 
-    return new SignInWithEmailResponse({
-      user,
+    return {
+      response: new SignInWithEmailResponse({
+        user,
+        tokens,
+      }),
       tokens,
-    });
+    };
   }
 
-  async getProfile(userId: string): Promise<GetProfileResponse> {
+  async getProfile(userId: string) {
     const user = await this.userRepo.findUserByID(userId);
     if (!user) {
       throwErrorFromContract(UserNotFoundError, {});
     }
 
-    return new GetProfileResponse(user);
+    return new GetProfileResponse({ user });
   }
+
+  // async refresh(refreshToken: string) {}
 }

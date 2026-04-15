@@ -9,6 +9,7 @@ import { ConfigModule } from './common/config/index.js';
 import { LoggerModule } from 'nestjs-pino';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './common/providers/jwt.provider.js';
+import { SecurityModule } from './common/security/security.module.js';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JwtStrategy } from './common/providers/jwt.provider.js';
     PrismaModule,
     ConfigModule,
     PassportModule,
+    SecurityModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
