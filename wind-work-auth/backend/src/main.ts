@@ -45,7 +45,6 @@ async function bootstrap() {
       sameSite: 'lax',
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     getToken: (req: FastifyRequest) => req.headers['x-csrf-token'] as string,
   });
 

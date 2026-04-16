@@ -10,6 +10,7 @@ import { JwtStrategy, SecurityModule } from '@wind-work/common';
 @Module({
   imports: [
     LoggerModule.forRoot({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       pinoHttp: {
         transport:
           process.env.NODE_ENV !== 'production'
@@ -19,7 +20,7 @@ import { JwtStrategy, SecurityModule } from '@wind-work/common';
               }
             : undefined,
         level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
-      },
+      } as any,
     }),
     AuthModule,
     UserModule,
