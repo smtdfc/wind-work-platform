@@ -1,0 +1,288 @@
+// @ts-nocheck
+export class ValidatorError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ValidatorError";
+  }
+}
+
+export class ValidationError extends Error {
+  errors: Record<string, string[]>;
+
+  constructor(message: string, errors: Record<string, string[]>) {
+    super(message);
+    this.name = "ValidationError";
+    this.errors = errors;
+  }
+}
+
+export function Is(value: unknown, constraint: unknown, msg: string): void {
+  if (value !== constraint) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function Min(value: unknown, min: number, msg: string): void {
+  if (typeof value !== "number" || value < min) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function Max(value: unknown, max: number, msg: string): void {
+  if (typeof value !== "number" || value > max) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function Length(value: unknown, length: number, msg: string): void {
+  if (typeof value !== "string" || value.length !== length) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function MinLength(value: unknown, min: number, msg: string): void {
+  if (typeof value !== "string" || value.length < min) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function MaxLength(value: unknown, max: number, msg: string): void {
+  if (typeof value !== "string" || value.length > max) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function Range(value: unknown, min: number, max: number, msg: string): void {
+  if (typeof value !== "number" || value < min || value > max) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function Matches(value: string, pattern: string, msg: string): void {
+  const regex = new RegExp(pattern);
+  if (!regex.test(value)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function Contains(value: string, part: string, msg: string): void {
+  if (!value.includes(part)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function StartsWith(value: string, prefix: string, msg: string): void {
+  if (!value.startsWith(prefix)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function EndsWith(value: string, suffix: string, msg: string): void {
+  if (!value.endsWith(suffix)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function In(value: unknown, values: unknown[], msg: string): void {
+  if (!values.includes(value)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsEmail(value: unknown, msg: string): void {
+  if (typeof value !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsNumber(value: unknown, msg: string): void {
+  if (typeof value !== "number") {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsURL(value: unknown, msg: string): void {
+  if (typeof value !== "string") {
+    throw new ValidatorError(msg);
+  }
+
+  try {
+    new URL(value);
+  } catch {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsUUID(value: unknown, msg: string): void {
+  if (typeof value !== "string" || !/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/.test(value)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsDate(value: unknown, msg: string): void {
+  if (typeof value !== "string" || Number.isNaN(Date.parse(value))) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsDateTime(value: unknown, msg: string): void {
+  IsDate(value, msg);
+}
+
+export function IsAlpha(value: unknown, msg: string): void {
+  if (typeof value !== "string" || !/^[A-Za-z]+$/.test(value)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsAlnum(value: unknown, msg: string): void {
+  if (typeof value !== "string" || !/^[A-Za-z0-9]+$/.test(value)) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function NotNull(value: unknown, msg: string): void {
+  if (value === null || value === undefined) {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function IsBool(value: unknown, msg: string): void {
+  if (typeof value !== "boolean") {
+    throw new ValidatorError(msg);
+  }
+}
+
+export function ValidateModel(value: unknown, msg: string): void {
+  if (value === null || value === undefined) {
+    return;
+  }
+
+  const candidate = value as { validate?: () => void };
+  if (typeof candidate.validate !== "function") {
+    return;
+  }
+
+  try {
+    candidate.validate();
+  } catch {
+    throw new ValidatorError(msg);
+  }
+}
+
+function prefixErrorPaths(path: string, errors: Record<string, string[]>): Record<string, string[]> {
+  const prefixed: Record<string, string[]> = {};
+
+  for (const [key, messages] of Object.entries(errors)) {
+    const nextKey = key ? `${path}.${key}` : path;
+    prefixed[nextKey] = messages;
+  }
+
+  return prefixed;
+}
+
+export function NestedValidate(value: unknown, path: string, msg: string): void {
+  if (value === null || value === undefined) {
+    return;
+  }
+
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => {
+      NestedValidate(item, `${path}[${index}]`, msg);
+    });
+    return;
+  }
+
+  const candidate = value as { validate?: () => void };
+  if (typeof candidate.validate !== "function") {
+    return;
+  }
+
+  try {
+    candidate.validate();
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw new ValidationError(error.message, prefixErrorPaths(path, error.errors));
+    }
+
+    if (error instanceof ValidatorError) {
+      throw new ValidationError("validation failed", { [path]: [error.message] });
+    }
+
+    throw new ValidatorError(msg);
+  }
+}
+
+
+
+export class ApiErrorResponseDTO {
+  code?: string;
+  // @ts-ignore: generated field may be initialized outside constructor
+message: string;
+  details?: any;
+
+  static fromJson(json: string): ApiErrorResponseDTO {
+    const data = JSON.parse(json);
+    return data instanceof ApiErrorResponseDTO ? data : new ApiErrorResponseDTO(data);
+  }
+  constructor(data: any = {}) {
+    this.code = data.code;
+    this.message = data.message;
+    this.details = data.details;
+  }
+
+  validate(): void {
+    const errors: Record<string, string[]> = {};
+
+    const addError = (field: string, message: string): void => {
+      if (!errors[field]) {
+        errors[field] = [];
+      }
+
+      errors[field].push(message);
+    };
+
+    if (Object.keys(errors).length > 0) {
+      throw new ValidationError("validation failed", errors);
+    }
+  }
+
+}
+
+export class ApiResponseDTO<T> {
+  // @ts-ignore: generated field may be initialized outside constructor
+status: string;
+  // @ts-ignore: generated field may be initialized outside constructor
+timestamp: string;
+  // @ts-ignore: generated field may be initialized outside constructor
+data: T;
+  error?: ApiErrorResponseDTO;
+
+  static fromJson(json: string): ApiResponseDTO {
+    const data = JSON.parse(json);
+    return data instanceof ApiResponseDTO ? data : new ApiResponseDTO(data);
+  }
+  constructor(data: any = {}) {
+    this.status = data.status;
+    this.timestamp = data.timestamp;
+    this.data = data.data;
+    this.error = data.error ? (data.error instanceof ApiErrorResponseDTO ? data.error : new ApiErrorResponseDTO(data.error)) : undefined;
+  }
+
+  validate(): void {
+    const errors: Record<string, string[]> = {};
+
+    const addError = (field: string, message: string): void => {
+      if (!errors[field]) {
+        errors[field] = [];
+      }
+
+      errors[field].push(message);
+    };
+
+    if (Object.keys(errors).length > 0) {
+      throw new ValidationError("validation failed", errors);
+    }
+  }
+
+}

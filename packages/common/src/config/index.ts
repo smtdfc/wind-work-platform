@@ -1,8 +1,8 @@
-import { Global, Module } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Global, Module } from "@nestjs/common";
+import * as fs from "fs";
+import * as path from "path";
 
-export const CONFIG_PROVIDER = Symbol('db');
+export const CONFIG_PROVIDER = Symbol("db");
 
 export type Config = {
   databaseURL: string;
@@ -19,9 +19,9 @@ export type Config = {
       provide: CONFIG_PROVIDER,
       useFactory: () => {
         const config: Partial<Config> = {
-          databaseURL: process.env.DATABASE_URL,
-          isProduction: process.env.NODE_ENV === 'production',
-          appDomain: process.env.APP_DOMAIN ?? '.your-domain',
+          databaseURL: process.env.DATABASE_URL!,
+          isProduction: process.env.NODE_ENV === "production",
+          appDomain: process.env.APP_DOMAIN ?? ".your-domain",
         };
         const rootPath = process.cwd();
         const jwtPublicKeyFile = process.env.JWT_PUBLIC_KEY_FILE;
@@ -30,13 +30,13 @@ export type Config = {
         if (jwtPublicKeyFile)
           config.jwtPublicKey = fs.readFileSync(
             path.join(rootPath, jwtPublicKeyFile),
-            'utf8',
+            "utf8",
           );
 
         if (jwtPrivateKeyFile)
           config.jwtPrivatekey = fs.readFileSync(
             path.join(rootPath, jwtPrivateKeyFile),
-            'utf8',
+            "utf8",
           );
 
         return config;

@@ -9,11 +9,10 @@ import {
   SignInWithEmailRequest,
 } from '@wind-work/contracts/wind-work-auth';
 import { AuthService } from './auth.service.js';
-import { User } from '../common/decorators/user.decorator.js';
-import { Auth } from '../common/decorators/auth.decorator.js';
+
 import '@fastify/cookie';
 import type { FastifyReply } from 'fastify';
-import { type Config, CONFIG_PROVIDER } from '../common/config/index.js';
+import { Auth, type Config, CONFIG_PROVIDER, User } from '@wind-work/common';
 
 @Controller()
 export class AuthController {

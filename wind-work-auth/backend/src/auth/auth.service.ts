@@ -1,8 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import {
-  AuthenticationMethodRepository,
-  SessionRepository,
-} from './auth.repository.js';
+import { SessionRepository } from './auth.repository.js';
 import {
   GetProfileResponse,
   SignInInformationIncorrectError,
@@ -15,15 +12,15 @@ import { throwErrorFromContract } from '@wind-work/contractor-for-nestjs';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import ms from 'ms';
-import { type Config, CONFIG_PROVIDER } from '../common/config/index.js';
+
 import { User } from '../generated/prisma/client.js';
+import { type Config, CONFIG_PROVIDER } from '@wind-work/common';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);
   constructor(
     private jwtService: JwtService,
-    private authMethodRepo: AuthenticationMethodRepository,
     private sessionRepo: SessionRepository,
     private userRepo: UserRepository,
     @Inject(CONFIG_PROVIDER) private config: Config,
@@ -70,7 +67,6 @@ export class AuthService {
     }
 
     const tokens = await this.generateToken(user);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const expiresAt = new Date(Date.now() + ms('7d'));
     await this.sessionRepo.create(
       tokens.refreshToken,

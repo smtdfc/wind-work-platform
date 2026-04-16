@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '../../generated/prisma/client.js';
 import { Global, Module } from '@nestjs/common';
-import { Config, CONFIG_PROVIDER } from '../config/index.js';
+import { DB_ADAPTER } from '@wind-work/common';
 
 export const PRISMA_PROVIDER = Symbol('db');
 
@@ -11,11 +11,8 @@ export const PRISMA_PROVIDER = Symbol('db');
   providers: [
     {
       provide: PRISMA_PROVIDER,
-      inject: [CONFIG_PROVIDER],
-      useFactory: (config: Config) => {
-        const adapter = new PrismaPg({
-          connectionString: `${config.databaseURL}`,
-        });
+      inject: [DB_ADAPTER],
+      useFactory: (adapter: PrismaPg) => {
         const prisma = new PrismaClient({ adapter });
         return prisma;
       },

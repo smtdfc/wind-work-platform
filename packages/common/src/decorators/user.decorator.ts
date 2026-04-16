@@ -1,5 +1,5 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IAuthTokenDecrypted } from '../types/jwt.js';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
+import { IAuthTokenDecrypted } from "../types/jwt.js";
 
 export const User = createParamDecorator(
   (data: string | undefined, ctx: ExecutionContext) => {

@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
-import { AllExceptionsFilter } from './common/filters/exception.filter.js';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor.js';
+
 import { Logger } from 'nestjs-pino';
 import {
   FastifyAdapter,
@@ -10,10 +9,22 @@ import {
 import fastifyCookie from '@fastify/cookie';
 import fastifyCsrf from '@fastify/csrf-protection';
 import { FastifyRequest } from 'fastify';
+import { Module } from '@nestjs/common';
+import {
+  AllExceptionsFilter,
+  ConfigModule,
+  DbAdapterModule,
+  TransformInterceptor,
+} from '@wind-work/common';
+
+@Module({
+  imports: [ConfigModule, DbAdapterModule, AppModule],
+})
+class RootModule {}
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
+    RootModule,
     new FastifyAdapter({
       logger: true,
     }),

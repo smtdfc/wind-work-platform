@@ -5,15 +5,15 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import { ApiError } from '../errors/ApiError.js';
+} from "@nestjs/common";
+import { ApiError } from "../errors/ApiError.js";
 import {
   ApiErrorResponseDTO,
   ApiResponseDTO,
   ValidationError,
-} from '@wind-work/contracts/wind-work-auth';
-import { ContractError } from '@wind-work/contractor-for-nestjs';
-import { Request, Response } from 'express';
+} from "@wind-work/contracts/wind-work-common";
+import { ContractError } from "@wind-work/contractor-for-nestjs";
+import { FastifyReply, FastifyRequest } from "fastify";
 
 interface NestHttpExceptionResponse {
   message?: string | string[];
@@ -26,12 +26,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<FastifyReply>();
+    const request = ctx.getRequest<FastifyRequest>();
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message: string = 'Internal server error';
+    let message: string = "Internal server error";
     let details: Record<string, string[]> = {};
-    let code = 'SERVER_ERR';
+    let code = "SERVER_ERR";
 
     if (exception instanceof ApiError) {
       message = exception.message;
@@ -42,18 +42,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
       status = HttpStatus.BAD_REQUEST;
       message = exception.message;
       details = exception.errors;
-      code = 'VALIDATE_ERR';
+      code = "VALIDATE_ERR";
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
       const res = exception.getResponse() as NestHttpExceptionResponse;
-      code = 'HTTP_ERR';
-      if (typeof res === 'string') {
+      code = "HTTP_ERR";
+      if (typeof res === "string") {
         message = res;
       } else {
         const rawMessage = Array.isArray(res.message)
           ? res.message[0]
           : res.message;
-        message = rawMessage ?? 'Unknown error';
+        message = rawMessage ?? "Unknown error";
       }
     } else if (exception instanceof ContractError) {
       message = exception.message;
@@ -75,9 +75,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
       );
     }
 
-    response.status(status).json(
+    response.code(status).send(
       new ApiResponseDTO({
-        status: 'error',
+        status: "error",
         timestamp: String(Date.now()),
         data: null,
         error: new ApiErrorResponseDTO({ code, message, details }),
