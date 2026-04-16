@@ -16,20 +16,6 @@ error AuthorizationError{
     status: 401
 }
 
-@CreateConstructor
-model ApiErrorResponseDTO{
-    code?: String
-    message: String
-    details?: Any
-}
-
-@CreateConstructor
-model ApiResponseDTO<T>{
-    status: String
-    timestamp: String
-    data: T
-    error?: ApiErrorResponseDTO
-}
 
 @CreateConstructor
 model Token{
