@@ -5,7 +5,8 @@ import { GroupModule } from './group/group.module.js';
 import { PrismaModule } from './common/prisma/index.js';
 import { LoggerModule } from 'nestjs-pino';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy, SecurityModule } from '@wind-work/common';
+import { CacheModule, JwtStrategy, SecurityModule } from '@wind-work/common';
+
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { JwtStrategy, SecurityModule } from '@wind-work/common';
     PrismaModule,
     PassportModule,
     SecurityModule,
+    CacheModule,
   ],
   controllers: [],
   providers: [JwtStrategy],

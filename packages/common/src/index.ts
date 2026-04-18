@@ -7,6 +7,7 @@ export * from "./guards/jwt.guard.js";
 export * from "./interceptors/transform.interceptor.js";
 export * from "./providers/jwt.provider.js";
 export * from "./providers/jwt.provider.js";
+export * from "./providers/cache.provider.js";
 export * from "./security/security.module.js";
 export * from "./types/jwt.js";
 export * from "./database/database.module.js";

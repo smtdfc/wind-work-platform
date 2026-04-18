@@ -16,6 +16,11 @@ error AuthorizationError{
     status: 401
 }
 
+error InvalidSessionError{
+    message:"InvalidSessionError"
+    code: "INVALID_SESSION_ERR"
+    status: 400
+}
 
 @CreateConstructor
 model Token{
@@ -64,6 +69,12 @@ model GetProfileResponse{
     user: User
 }
 
+@CreateConstructor
+model RefreshSessionResponse{
+    user: User
+    tokens: Token
+}
+
 rest SignInWithEmail{
     path:"/api/v1/auth/sign-in/email"
     method:"POST"
@@ -72,4 +83,9 @@ rest SignInWithEmail{
 rest GetProfile{
     path:"/api/v1/auth/profile"
     method:"GET"
+}
+
+rest RefreshSession{
+    path:"/api/v1/auth/refresh"
+    method:"POST"
 }

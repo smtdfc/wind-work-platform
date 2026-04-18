@@ -16,7 +16,8 @@
 
     /* Build config */
     "outDir": "./dist",
-    "rootDir": "./src",
+    "baseUrl": "./",
+    "rootDir": "./",
     "declaration": true,
     "sourceMap": true,
     "incremental": true,

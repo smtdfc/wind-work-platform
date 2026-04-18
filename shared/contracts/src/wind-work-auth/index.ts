@@ -242,10 +242,21 @@ export class AuthorizationError extends Error {
     this.name = "AuthorizationError";
   }
 }
+
+export class InvalidSessionError extends Error {
+  public code = "INVALID_SESSION_ERR";
+  public status = "400";
+
+  constructor() {
+    super("InvalidSessionError");
+    this.name = "InvalidSessionError";
+  }
+}
 export const ErrorMap: Record<string, () => Error> = {
   "USER_NOT_FOUND_ERR": () => new UserNotFoundError(),
   "SIGNIN_INFO_INCORRECT_ERR": () => new SignInInformationIncorrectError(),
   "AUTHORIZATION_ERR": () => new AuthorizationError(),
+  "INVALID_SESSION_ERR": () => new InvalidSessionError(),
 };
 
 export function createErrorByKey(key: string): Error | null {
@@ -544,6 +555,39 @@ user: User;
 
 }
 
+export class RefreshSessionResponse {
+  // @ts-ignore: generated field may be initialized outside constructor
+user: User;
+  // @ts-ignore: generated field may be initialized outside constructor
+tokens: Token;
+
+  static fromJson(json: string): RefreshSessionResponse {
+    const data = JSON.parse(json);
+    return data instanceof RefreshSessionResponse ? data : new RefreshSessionResponse(data);
+  }
+  constructor(data: any = {}) {
+    this.user = data.user ? (data.user instanceof User ? data.user : new User(data.user)) : undefined;
+    this.tokens = data.tokens ? (data.tokens instanceof Token ? data.tokens : new Token(data.tokens)) : undefined;
+  }
+
+  validate(): void {
+    const errors: Record<string, string[]> = {};
+
+    const addError = (field: string, message: string): void => {
+      if (!errors[field]) {
+        errors[field] = [];
+      }
+
+      errors[field].push(message);
+    };
+
+    if (Object.keys(errors).length > 0) {
+      throw new ValidationError("validation failed", errors);
+    }
+  }
+
+}
+
 export type RestInfo = {
   path: string;
   method: string;
@@ -565,3 +609,11 @@ export const GetProfile: RestInfo = {
 };
 export type GetProfileRequestBody = any;
 export type GetProfileResponseBody = any;
+
+export const RefreshSession: RestInfo = {
+  path: "/api/v1/auth/refresh",
+  method: "POST",
+  queries: [],
+};
+export type RefreshSessionRequestBody = any;
+export type RefreshSessionResponseBody = any;

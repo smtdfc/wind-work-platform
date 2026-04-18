@@ -2,6 +2,8 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { SessionRepository } from './auth.repository.js';
 import {
   GetProfileResponse,
+  InvalidSessionError,
+  RefreshSessionResponse,
   SignInInformationIncorrectError,
   SignInWithEmailRequest,
   SignInWithEmailResponse,
@@ -12,9 +14,13 @@ import { throwErrorFromContract } from '@wind-work/contractor-for-nestjs';
 import { JwtService } from '@nestjs/jwt';
 import * as argon2 from 'argon2';
 import ms from 'ms';
+import { v4 } from 'uuid';
 
-import { User } from '../generated/prisma/client.js';
-import { type Config, CONFIG_PROVIDER } from '@wind-work/common';
+import {
+  type Config,
+  CONFIG_PROVIDER,
+  IAuthTokenPayload,
+} from '@wind-work/common';
 
 @Injectable()
 export class AuthService {
@@ -26,8 +32,8 @@ export class AuthService {
     @Inject(CONFIG_PROVIDER) private config: Config,
   ) {}
 
-  async generateToken(user: User) {
-    const payload = { sub: user.id };
+  async generateToken(userId: string, sid: string) {
+    const payload = { sub: userId, sid: sid };
 
     return {
       accessToken: await this.jwtService.signAsync(payload, {
@@ -66,9 +72,11 @@ export class AuthService {
       throwErrorFromContract(SignInInformationIncorrectError, {});
     }
 
-    const tokens = await this.generateToken(user);
+    const sid = v4();
     const expiresAt = new Date(Date.now() + ms('7d'));
+    const tokens = await this.generateToken(user.id, sid);
     await this.sessionRepo.create(
+      sid,
       tokens.refreshToken,
       expiresAt,
       user.id,
@@ -93,5 +101,57 @@ export class AuthService {
     return new GetProfileResponse({ user });
   }
 
-  // async refresh(refreshToken: string) {}
+  async refresh(refreshToken: string) {
+    const payload = await this.jwtService.verifyAsync<IAuthTokenPayload>(
+      refreshToken,
+      {
+        secret: this.config.jwtPublicKey,
+      },
+    );
+
+    const session = await this.sessionRepo.findById(payload.sid);
+    if (!session || session.isBlocked)
+      throwErrorFromContract(InvalidSessionError, {});
+
+    const GRACE_PERIOD = 30 * 1000;
+
+    if (refreshToken === session.oldRefreshToken) {
+      const timeSinceReplacement =
+        Date.now() - (session.replacedAt?.getTime() ?? 0);
+
+      if (timeSinceReplacement <= GRACE_PERIOD) {
+        return new RefreshSessionResponse({
+          tokens: await this.generateToken(session.userId, session.id),
+        });
+      } else {
+        await this.sessionRepo.blockAllByUserId(session.userId);
+        throwErrorFromContract(InvalidSessionError, {});
+      }
+    }
+
+    if (refreshToken !== session.refreshToken) {
+      await this.sessionRepo.blockAllByUserId(session.userId);
+      throwErrorFromContract(InvalidSessionError, {});
+    }
+
+    const tokens = await this.generateToken(session.userId, session.id);
+    const expiresAt = new Date(Date.now() + ms('7d'));
+
+    await this.sessionRepo.updateRotation(session.id, {
+      oldRefreshToken: refreshToken,
+      newRefreshToken: tokens.refreshToken,
+      expiresAt,
+    });
+
+    return new RefreshSessionResponse({ tokens });
+  }
+
+  private async getTokensForSession(sessionId: string) {
+    const session = await this.sessionRepo.findById(sessionId);
+    if (!session || session.isBlocked) {
+      throwErrorFromContract(InvalidSessionError, {});
+    }
+
+    return this.generateToken(session.userId, session.id);
+  }
 }

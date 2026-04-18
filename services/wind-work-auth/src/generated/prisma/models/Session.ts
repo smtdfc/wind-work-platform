@@ -29,6 +29,7 @@ export type SessionMinAggregateOutputType = {
   refreshToken: string | null
   replacedAt: Date | null
   expiresAt: Date | null
+  oldRefreshToken: string | null
   isBlocked: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -41,6 +42,7 @@ export type SessionMaxAggregateOutputType = {
   refreshToken: string | null
   replacedAt: Date | null
   expiresAt: Date | null
+  oldRefreshToken: string | null
   isBlocked: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +55,7 @@ export type SessionCountAggregateOutputType = {
   refreshToken: number
   replacedAt: number
   expiresAt: number
+  oldRefreshToken: number
   isBlocked: number
   createdAt: number
   updatedAt: number
@@ -67,6 +70,7 @@ export type SessionMinAggregateInputType = {
   refreshToken?: true
   replacedAt?: true
   expiresAt?: true
+  oldRefreshToken?: true
   isBlocked?: true
   createdAt?: true
   updatedAt?: true
@@ -79,6 +83,7 @@ export type SessionMaxAggregateInputType = {
   refreshToken?: true
   replacedAt?: true
   expiresAt?: true
+  oldRefreshToken?: true
   isBlocked?: true
   createdAt?: true
   updatedAt?: true
@@ -91,6 +96,7 @@ export type SessionCountAggregateInputType = {
   refreshToken?: true
   replacedAt?: true
   expiresAt?: true
+  oldRefreshToken?: true
   isBlocked?: true
   createdAt?: true
   updatedAt?: true
@@ -176,6 +182,7 @@ export type SessionGroupByOutputType = {
   refreshToken: string
   replacedAt: Date | null
   expiresAt: Date
+  oldRefreshToken: string | null
   isBlocked: boolean
   createdAt: Date
   updatedAt: Date
@@ -209,6 +216,7 @@ export type SessionWhereInput = {
   refreshToken?: Prisma.StringFilter<"Session"> | string
   replacedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
+  oldRefreshToken?: Prisma.StringNullableFilter<"Session"> | string | null
   isBlocked?: Prisma.BoolFilter<"Session"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Session"> | Date | string
@@ -223,6 +231,7 @@ export type SessionOrderByWithRelationInput = {
   refreshToken?: Prisma.SortOrder
   replacedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  oldRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -240,6 +249,7 @@ export type SessionWhereUniqueInput = Prisma.AtLeast<{
   refreshToken?: Prisma.StringFilter<"Session"> | string
   replacedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
+  oldRefreshToken?: Prisma.StringNullableFilter<"Session"> | string | null
   isBlocked?: Prisma.BoolFilter<"Session"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Session"> | Date | string
@@ -254,6 +264,7 @@ export type SessionOrderByWithAggregationInput = {
   refreshToken?: Prisma.SortOrder
   replacedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  oldRefreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -272,6 +283,7 @@ export type SessionScalarWhereWithAggregatesInput = {
   refreshToken?: Prisma.StringWithAggregatesFilter<"Session"> | string
   replacedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
+  oldRefreshToken?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
   isBlocked?: Prisma.BoolWithAggregatesFilter<"Session"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Session"> | Date | string
@@ -284,6 +296,7 @@ export type SessionCreateInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -296,6 +309,7 @@ export type SessionUncheckedCreateInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -308,6 +322,7 @@ export type SessionUpdateInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -320,6 +335,7 @@ export type SessionUncheckedUpdateInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -332,6 +348,7 @@ export type SessionCreateManyInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -344,6 +361,7 @@ export type SessionUpdateManyMutationInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -354,6 +372,7 @@ export type SessionUncheckedUpdateManyInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,6 +395,7 @@ export type SessionCountOrderByAggregateInput = {
   refreshToken?: Prisma.SortOrder
   replacedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  oldRefreshToken?: Prisma.SortOrder
   isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -388,6 +408,7 @@ export type SessionMaxOrderByAggregateInput = {
   refreshToken?: Prisma.SortOrder
   replacedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  oldRefreshToken?: Prisma.SortOrder
   isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -400,6 +421,7 @@ export type SessionMinOrderByAggregateInput = {
   refreshToken?: Prisma.SortOrder
   replacedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
+  oldRefreshToken?: Prisma.SortOrder
   isBlocked?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -500,6 +522,7 @@ export type SessionCreateWithoutUserInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -511,6 +534,7 @@ export type SessionUncheckedCreateWithoutUserInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -551,6 +575,7 @@ export type SessionScalarWhereInput = {
   refreshToken?: Prisma.StringFilter<"Session"> | string
   replacedAt?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"Session"> | Date | string
+  oldRefreshToken?: Prisma.StringNullableFilter<"Session"> | string | null
   isBlocked?: Prisma.BoolFilter<"Session"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Session"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Session"> | Date | string
@@ -563,6 +588,7 @@ export type SessionCreateWithoutMethodInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -574,6 +600,7 @@ export type SessionUncheckedCreateWithoutMethodInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -611,6 +638,7 @@ export type SessionCreateManyUserInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -622,6 +650,7 @@ export type SessionUpdateWithoutUserInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -633,6 +662,7 @@ export type SessionUncheckedUpdateWithoutUserInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -644,6 +674,7 @@ export type SessionUncheckedUpdateManyWithoutUserInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -655,6 +686,7 @@ export type SessionCreateManyMethodInput = {
   refreshToken: string
   replacedAt?: Date | string | null
   expiresAt: Date | string
+  oldRefreshToken?: string | null
   isBlocked?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -666,6 +698,7 @@ export type SessionUpdateWithoutMethodInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -677,6 +710,7 @@ export type SessionUncheckedUpdateWithoutMethodInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -688,6 +722,7 @@ export type SessionUncheckedUpdateManyWithoutMethodInput = {
   refreshToken?: Prisma.StringFieldUpdateOperationsInput | string
   replacedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  oldRefreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isBlocked?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -701,6 +736,7 @@ export type SessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   refreshToken?: boolean
   replacedAt?: boolean
   expiresAt?: boolean
+  oldRefreshToken?: boolean
   isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -715,6 +751,7 @@ export type SessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   refreshToken?: boolean
   replacedAt?: boolean
   expiresAt?: boolean
+  oldRefreshToken?: boolean
   isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -729,6 +766,7 @@ export type SessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   refreshToken?: boolean
   replacedAt?: boolean
   expiresAt?: boolean
+  oldRefreshToken?: boolean
   isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -743,6 +781,7 @@ export type SessionSelectScalar = {
   refreshToken?: boolean
   replacedAt?: boolean
   expiresAt?: boolean
+  oldRefreshToken?: boolean
   isBlocked?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -750,7 +789,7 @@ export type SessionSelectScalar = {
   authenticationMethodId?: boolean
 }
 
-export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "refreshToken" | "replacedAt" | "expiresAt" | "isBlocked" | "createdAt" | "updatedAt" | "userId" | "authenticationMethodId", ExtArgs["result"]["session"]>
+export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "refreshToken" | "replacedAt" | "expiresAt" | "oldRefreshToken" | "isBlocked" | "createdAt" | "updatedAt" | "userId" | "authenticationMethodId", ExtArgs["result"]["session"]>
 export type SessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   method?: boolean | Prisma.AuthenticationMethodDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -775,6 +814,7 @@ export type $SessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     refreshToken: string
     replacedAt: Date | null
     expiresAt: Date
+    oldRefreshToken: string | null
     isBlocked: boolean
     createdAt: Date
     updatedAt: Date
@@ -1209,6 +1249,7 @@ export interface SessionFieldRefs {
   readonly refreshToken: Prisma.FieldRef<"Session", 'String'>
   readonly replacedAt: Prisma.FieldRef<"Session", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"Session", 'DateTime'>
+  readonly oldRefreshToken: Prisma.FieldRef<"Session", 'String'>
   readonly isBlocked: Prisma.FieldRef<"Session", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Session", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Session", 'DateTime'>

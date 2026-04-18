@@ -15,8 +15,9 @@
     "verbatimModuleSyntax": false,
 
     /* Build config */
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "./dist-lib",
+    "baseUrl": "./",
+    "rootDir": "./",
     "declaration": true,
     "sourceMap": true,
     "incremental": true,

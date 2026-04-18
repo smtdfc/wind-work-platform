@@ -16,6 +16,9 @@ import {
   DbAdapterModule,
   TransformInterceptor,
 } from '@wind-work/common';
+import { config } from 'dotenv';
+
+config();
 
 @Module({
   imports: [ConfigModule, DbAdapterModule, AppModule],

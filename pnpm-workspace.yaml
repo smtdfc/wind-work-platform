@@ -2,4 +2,4 @@ packages:
   - "apps/*"
   - "packages/*"
   - "shared/*"
-  - "wind-work-auth/*"
+  - "services/*"

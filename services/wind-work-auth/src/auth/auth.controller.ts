@@ -1,17 +1,20 @@
-import { Controller, Inject, Res } from '@nestjs/common';
+import { Controller, Inject, Req, Res } from '@nestjs/common';
 import {
   RequestFromContract,
+  throwErrorFromContract,
   ValidateFromContract,
 } from '@wind-work/contractor-for-nestjs';
 import {
   GetProfile,
+  InvalidSessionError,
+  RefreshSession,
   SignInWithEmail,
   SignInWithEmailRequest,
 } from '@wind-work/contracts/wind-work-auth';
 import { AuthService } from './auth.service.js';
 
 import '@fastify/cookie';
-import type { FastifyReply } from 'fastify';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Auth, type Config, CONFIG_PROVIDER, User } from '@wind-work/common';
 
 @Controller()
@@ -30,7 +33,6 @@ export class AuthController {
 
     if (tokens.refreshToken) {
       const isProd = this.config.isProduction;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       res.setCookie('rt', tokens.refreshToken, {
         path: '/',
         httpOnly: true,
@@ -48,5 +50,16 @@ export class AuthController {
   @RequestFromContract(GetProfile)
   async getProfile(@User('id') userId: string) {
     return await this.authService.getProfile(userId);
+  }
+
+  @RequestFromContract(RefreshSession)
+  async refreshSession(@Req() req: FastifyRequest) {
+    const cookieObj = req.unsignCookie(req.cookies['rt'] || '');
+
+    if (!cookieObj.valid || !cookieObj.value) {
+      throwErrorFromContract(InvalidSessionError, {});
+    }
+
+    return this.authService.refresh(cookieObj.value);
   }
 }
