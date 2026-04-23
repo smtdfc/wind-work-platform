@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PRISMA_PROVIDER } from '../common/prisma/index.js';
 import { PrismaClient } from '../generated/prisma/client.js';
+import { Prisma } from '../generated/prisma/client.js';
 
-export type AuthMethod = 'PASSWORD';
+// export type AuthMethod = 'PASSWORD';
 
 @Injectable()
 export class AuthenticationMethodRepository {
@@ -44,6 +45,13 @@ export class SessionRepository {
         refreshToken: refreshToken,
         expiresAt: expiresAt,
       },
+    });
+  }
+
+  async update(id: string, data: Prisma.SessionUpdateInput) {
+    return this.db.session.update({
+      where: { id },
+      data,
     });
   }
 

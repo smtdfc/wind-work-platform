@@ -7,6 +7,7 @@
     "lib:build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+
   "exports": {
     ".": {
       "import": "./dist/index.js",

@@ -6,6 +6,13 @@
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist-lib/index.js",
+      "default": "./dist-lib/index.js",
+      "types": "./dist-lib/index.d.ts"
+    }
+  },
   "scripts": {
     "service:build": "nest build",
     "service:start": "nest start",
@@ -71,5 +78,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

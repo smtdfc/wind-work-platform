@@ -17,10 +17,13 @@ import ms from 'ms';
 import { v4 } from 'uuid';
 
 import {
+  CACHE_PROVIDER,
   type Config,
   CONFIG_PROVIDER,
   IAuthTokenPayload,
 } from '@wind-work/common';
+import { type ICacheStrategy } from '@wind-work/common';
+
 
 @Injectable()
 export class AuthService {
@@ -30,6 +33,7 @@ export class AuthService {
     private sessionRepo: SessionRepository,
     private userRepo: UserRepository,
     @Inject(CONFIG_PROVIDER) private config: Config,
+    @Inject(CACHE_PROVIDER) private cache: ICacheStrategy,
   ) {}
 
   async generateToken(userId: string, sid: string) {
@@ -120,9 +124,8 @@ export class AuthService {
         Date.now() - (session.replacedAt?.getTime() ?? 0);
 
       if (timeSinceReplacement <= GRACE_PERIOD) {
-        return new RefreshSessionResponse({
-          tokens: await this.generateToken(session.userId, session.id),
-        });
+        const tokens = await this.generateToken(session.userId, session.id);
+        return { response: new RefreshSessionResponse({ tokens }), tokens };
       } else {
         await this.sessionRepo.blockAllByUserId(session.userId);
         throwErrorFromContract(InvalidSessionError, {});
@@ -143,7 +146,32 @@ export class AuthService {
       expiresAt,
     });
 
-    return new RefreshSessionResponse({ tokens });
+    return { response: new RefreshSessionResponse({ tokens }), tokens };
+  }
+
+  async signOut(refreshToken: string): Promise<void> {
+    const payload = await this.jwtService.verifyAsync<IAuthTokenPayload>(
+      refreshToken,
+      { secret: this.config.jwtPublicKey },
+    );
+
+    const session = await this.sessionRepo.findById(payload.sid);
+
+    if (!session || session.isBlocked) {
+      throwErrorFromContract(InvalidSessionError, {});
+    }
+
+    await this.sessionRepo.update(payload.sid, {
+      isBlocked: true,
+      logoutAt: new Date(),
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+    this.cache.set(
+      `blacklist:token:${refreshToken}`,
+      'true',
+      payload.exp - Math.floor(Date.now() / 1000),
+    );
   }
 
   private async getTokensForSession(sessionId: string) {

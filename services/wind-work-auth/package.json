@@ -107,6 +107,7 @@
     "testEnvironment": "node"
   },
   "files": [
-    "dist-lib"
+    "dist-lib",
+    "dist"
   ]
 }

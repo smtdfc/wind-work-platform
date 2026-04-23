@@ -617,3 +617,11 @@ export const RefreshSession: RestInfo = {
 };
 export type RefreshSessionRequestBody = any;
 export type RefreshSessionResponseBody = any;
+
+export const SignOut: RestInfo = {
+  path: "/api/v1/auth/sign-out",
+  method: "POST",
+  queries: [],
+};
+export type SignOutRequestBody = any;
+export type SignOutResponseBody = any;

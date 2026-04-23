@@ -111,6 +111,7 @@ export const SessionScalarFieldEnum = {
   replacedAt: 'replacedAt',
   expiresAt: 'expiresAt',
   oldRefreshToken: 'oldRefreshToken',
+  logoutAt: 'logoutAt',
   isBlocked: 'isBlocked',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

@@ -89,3 +89,8 @@ rest RefreshSession{
     path:"/api/v1/auth/refresh"
     method:"POST"
 }
+
+rest SignOut{
+    path:"/api/v1/auth/sign-out"
+    method:"POST"
+}

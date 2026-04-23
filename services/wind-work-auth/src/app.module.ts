@@ -7,7 +7,6 @@ import { LoggerModule } from 'nestjs-pino';
 import { PassportModule } from '@nestjs/passport';
 import { CacheModule, JwtStrategy, SecurityModule } from '@wind-work/common';
 
-
 @Module({
   imports: [
     LoggerModule.forRoot({
@@ -29,7 +28,7 @@ import { CacheModule, JwtStrategy, SecurityModule } from '@wind-work/common';
     PrismaModule,
     PassportModule,
     SecurityModule,
-    CacheModule,
+    CacheModule.register(),
   ],
   controllers: [],
   providers: [JwtStrategy],

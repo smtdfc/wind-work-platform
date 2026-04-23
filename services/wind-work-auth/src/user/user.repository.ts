@@ -7,13 +7,13 @@ export class UserRepository {
   constructor(@Inject(PRISMA_PROVIDER) private db: PrismaClient) {}
 
   async findUserByEmail(email: string): Promise<User | null> {
-    return await this.db.user.findUnique({
+    return this.db.user.findUnique({
       where: { email },
     });
   }
 
   async findUserByID(id: string): Promise<User | null> {
-    return await this.db.user.findUnique({
+    return this.db.user.findUnique({
       where: { id },
     });
   }
